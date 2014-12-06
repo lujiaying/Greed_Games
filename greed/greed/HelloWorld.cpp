@@ -1,23 +1,40 @@
 #include <iostream>
+#include "GreedGame.h"
 using namespace std;
 
 class CRectangle {
 
-	int x, y;
+	int *width, *height;
 public:
-	void set_values(int, int);
-	int area(void) { return (x*y); };
+	CRectangle(int, int);
+	~CRectangle();
+	int area(void) { return (*width * *height); };
 };
 
-void CRectangle::set_values(int a, int b) {
-	x = a;
-	y = b;
+CRectangle::CRectangle(int a, int b) {
+	width = new int;
+	height = new int;
+	*width = a;
+	*height = b;
+}
+
+CRectangle::~CRectangle(){
+	delete width;
+	delete height;
 }
 
 int main()
 {
-	CRectangle rect;
-	rect.set_values(3, 4);
-	cout << "area:" << rect.area();
+	/**
+	CRectangle rect(3, 4);
+	CRectangle rectb(5, 6);
+	cout << "rect area: " << rect.area() << endl;
+	cout << "rectb area: " << rectb.area() << endl;
+	**/
+
+	Dice dice;
+	for (int i = 0; i < 10; i++) {
+		cout << i+1 << "st roll: " << dice.roll() << endl;
+	}
 	getchar();
 }
