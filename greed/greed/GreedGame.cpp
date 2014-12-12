@@ -1,6 +1,8 @@
 #include <stdlib.h>
-#include <iostream>
+#include <string>
 #include "GreedGame.h"
+
+using std::string;
 
 /* 骰子的构造函数 */
 Dice::Dice(){
@@ -26,42 +28,39 @@ bool Dice::isValid(){
 
 /* 玩家的构造函数 */
 Player::Player(){
-	dices = new Dice[dice_num];
-	current_score = 0;
-	total_score = 0;
+	order = 0;
+	score = 0;
 }
 
-/* 玩家的析构函数 */
-Player::~Player(){
-	delete[] dices;
+/* 设置玩家名字 */
+void Player::setName(string new_name)
+{
+	name = new_name;
 }
 
-/* 投掷当前所有可用的骰子 */
-void Player::roll(){
-	for (int i = 0; i < dice_num; i++){
-		if (dices[i].isValid){
-			dices[i].roll();
-			std::cout << "dices[" << i << "] roll: " << dices[i].getNum() << std::endl;
-		}
-	}
+/* 获得玩家名字 */
+string Player::getName()
+{
+	return name;
 }
 
-/* 给玩家本轮得分加分 */
-void Player::addCurrentScore(int score){
-	current_score += score;
+/* 设置玩家游戏顺序 */
+void Player::setOrder(int game_order)
+{
+	order = game_order;
+}
+/* 获得玩家游戏顺序 */
+int Player::getOrder()
+{
+	return order;
 }
 
-/* 给玩家本局总得分加分 */
-void Player::addTotaltScore(int score){
-	total_score += score;
+/* 给玩家加分 */
+void Player::addScore(int current_turn_score){
+	score += current_turn_score;
 }
 
-/* 获得玩家本轮得分 */
-int Player::getCurrentScore(){
-	return current_score;
-}
-
-/* 获得玩家本局总得分 */
-int Player::getTotalScore(){
-	return total_score;
+/* 获得玩家当前的总得分 */
+int Player::getScore(){
+	return score;
 }
