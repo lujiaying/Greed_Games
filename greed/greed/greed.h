@@ -61,6 +61,8 @@ public:
 	void rollDice();
 	/* 展示骰子投掷结果 */
 	void displayRollResult();
+	/* 获得当前剩余有效骰子的数量 */
+	int getValidDiceNum();
 	/* 当前是否存在有效骰子 */
 	bool isExistValidDice();
 	/* 计算得分 */
