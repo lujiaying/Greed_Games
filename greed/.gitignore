@@ -6,3 +6,4 @@ Release/
 
 # VS project compile files
 *.sdf
+*.suo

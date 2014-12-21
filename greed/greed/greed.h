@@ -48,7 +48,7 @@ class Referee
 {
 private:
 	Dice dices[GAME_DICE_NUM];      //骰子
-	int num;						//游戏者人数
+	int player_num;						//游戏者人数
 	std::vector<Player>  players;     //游戏者 
 public:
 	/* 游戏初始化 */
@@ -59,6 +59,8 @@ public:
 	void gameEnd();
 	/* roll Dice */
 	void rollDice();
+	/* 展示骰子投掷结果 */
+	void displayRollResult();
 	/* 计算得分 */
 	int calculateScore();
 	/* 将骰子置无效 */
