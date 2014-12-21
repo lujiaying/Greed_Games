@@ -1,5 +1,9 @@
 #include "greed.h"
 
+using std::endl;
+using std::cout;
+using std::cin;
+
 
 /* 骰子的构造函数 */
 Dice::Dice(){
@@ -24,11 +28,14 @@ void Dice::roll(){
 int Dice::getNum(){
 	return num;
 }
-/* 构造函数 */
+
+
+/* 玩家的构造函数 */
 Player::Player()
 {
 	score = 0;
 }
+/* 玩家的构造函数 */
 Player::Player(std::string n)
 {
 	score = 0;
@@ -55,35 +62,42 @@ void Player::setScore(int s)
 	score = s;
 }
 
+
 /* 投掷骰子 */
 void Referee::rollDice()
 {
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < GAME_DICE_NUM; i++)
 	{
-		d[i].roll();
+		dices[i].roll();
 	}
 }
 /* 将得分骰子失效 */
-void Referee::invalidDice(int n){
+void Referee::invalidDice(int invalid_num)
+{
 	int j = 0;
-	for (int i = 0; i < 6; i++){
-		if (d[i].isValid()){
-			d[i].setValid(false);
+	for (int i = 0; i < GAME_DICE_NUM; i++) {
+		if (dices[i].isValid()) {
+			dices[i].setValid(false);
 			j++;
 		}
-		if (j == n)break;
+
+		if (j == invalid_num) {
+			break;
+		}
 	}
 }
 /* 计算得分 */
 int Referee::calculateScore()
 {
 	int point[6] = { 0 };
-	int score=0;
-	for (int i = 0; i < 6; i++){
-		if (d[i].isValid())point[d[i].getNum()-1] += 1;
+	int score = 0;
+	for (int i = 0; i < 6; i++) {
+		if (dices[i].isValid())point[dices[i].getNum()-1] += 1;
 	}
-	if (point[0] == 6){ score = 3000; invalidDice(6); }
-	else if (point[0] < 6 && point[0] >= 3){
+	if (point[0] == 6) { 
+		score = 3000; invalidDice(6); 
+	}
+	else if (point[0] < 6 && point[0] >= 3) {
 		score += 1000;
 		point[0] -= 3;
 		invalidDice(3);
@@ -102,30 +116,33 @@ int Referee::calculateScore()
 			invalidDice(3);
 		}
 	}
-	std::cout << std::endl << "you got  " << score << "  scores" << std::endl;
+	cout << endl << "you got  " << score << "  scores" << endl;
 	return score;
 }
 /* 游戏初始化 */
 void Referee::gameInit()
 {
-	char flag = 'y';
-	std::string s;
-	Player p;
-	std::cout << "game is starting......" << std::endl;
+	char flag = 'y';				//是否继续的标志: y continue; n exit.
+	Player new_player;				//一个新玩家
+	std::string player_name;		//玩家输入的姓名
+
+	cout << "game is starting......" << endl;
 	//输入游戏者
 	while (flag == 'y'){                                    
-		std::cout << "Please input the new player's name:";
-		std::cin >> s;
-		p.setName(s);
-		actor.push_back(p);
-		std::cout << "Continue anyway? Please input y or n:";
-		std::cin >> flag;
+		cout << "Please input a new player's name: ";
+		cin >> player_name;
+		new_player.setName(player_name);
+		players.push_back(new_player);
+		cout << "Current player num: " << players.size() << endl;
+		cout << "Create a new player? (y or n): ";
+		cin >> flag;
+		cout << endl;
 	}
-	num = actor.size();
+	num = players.size();
 	//游戏者数量必须大于1
 	if (num < 2)
 	{
-		std::cout << "The number of Player is less than 2.";
+		cout << "The number of Player is less than 2.";
 		exit(0);
 	}
 	//初始化游戏顺序
@@ -142,31 +159,31 @@ void Referee::gameStart()
 		for (int i = 0; i < num; i++)
 		{
 			for (int j = 0; j < 6; j++){   //为新一轮的游戏者激活六个骰子
-				d[j].setValid(true);
+				dices[j].setValid(true);
 			}
 
 			char flag = 'y';
 			int thisScore = 0;    //本轮得分
 			int theScore = 0;   //本把得分
-			std::cout << "It's " << actor[i].getName() << "'s turn" << std::endl;
+			cout << "It's " << players[i].getName() << "'s turn" << endl;
 			rollDice(); theScore = calculateScore();              //入局投掷
 			if (theScore < 300)continue;
 			thisScore += theScore; theScore = 0;
-			std::cout << "Continue anyway? Please input y or n:";
-			std::cin >> flag;
+			cout << "Continue anyway? Please input y or n:";
+			cin >> flag;
 			while (flag){
 				rollDice(); theScore = calculateScore();
 				if (theScore == 0){
 					thisScore = 0; break;
 				}
 				thisScore += theScore; theScore = 0;
-				if ((actor[i].getScore() + thisScore) >= 3000)break;
-				std::cout << "Continue anyway? Please input y or n:";
-				std::cin >> flag;
+				if ((players[i].getScore() + thisScore) >= 3000)break;
+				cout << "Continue anyway? Please input y or n:";
+				cin >> flag;
 			}
-			actor[i].setScore(actor[i].getScore()+thisScore);
-			if (actor[i].getScore() >= 3000){
-				std::cout << "We have a winner:" << actor[i].getName() << std::endl;
+			players[i].setScore(players[i].getScore()+thisScore);
+			if (players[i].getScore() >= 3000){
+				cout << "We have a winner:" << players[i].getName() << endl;
 				winFlag = 'n';
 				break;
 			}

@@ -5,6 +5,8 @@
 #ifndef GREED_H
 #define GREED_H
 
+#define GAME_DICE_NUM 6
+
 class Dice
 {
 private:
@@ -16,7 +18,7 @@ public:
 	/* 获取有效性 */
 	bool isValid();
 	/* 设置有效性 */
-	void setValid(bool v);
+	void setValid(bool);
 	/* 投掷 */
 	void roll();
 	/* 获得点数 */
@@ -31,23 +33,23 @@ private:
 public:
 	/* 构造函数 */
 	Player();
-	Player(std::string n);
+	Player(std::string);
 	/* 设置姓名 */
-	void setName(std::string n);
+	void setName(std::string);
 	/* 获取姓名 */
 	std::string getName();
 	/* 获取分数 */
 	int getScore();
 	/* 设置分数 */
-	void setScore(int s);
+	void setScore(int);
 };
 
 class Referee
 {
 private:
-	Dice d[6];      //骰子
-	int num;
-	std::vector<Player>  actor;     //游戏者 
+	Dice dices[GAME_DICE_NUM];      //骰子
+	int num;						//游戏者人数
+	std::vector<Player>  players;     //游戏者 
 public:
 	/* 游戏初始化 */
 	void gameInit();
@@ -60,7 +62,7 @@ public:
 	/* 计算得分 */
 	int calculateScore();
 	/* 将骰子置无效 */
-	void invalidDice(int n);
+	void invalidDice(int);
 };
 
 #endif

@@ -1,0 +1,8 @@
+# VS Debug dir
+Debug/
+
+# VS Release dir
+Release/
+
+# VS project compile files
+*.sdf
