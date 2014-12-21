@@ -10,7 +10,7 @@ Dice::Dice(){
 	valid = true;
 	num = 0;
 }
-/* 获取有效性 */
+/* 获取有效性: true 有效, false 无效 */
 bool Dice::isValid()
 {
 	return valid;
@@ -129,6 +129,7 @@ int Referee::calculateScore()
 	invalidDice(point[4] - 3);
 
 	// cout << endl << "you got  " << score << "  scores" << endl;    信息输出移到更外层的函数
+
 	return score;
 }
 /* 游戏初始化 */
@@ -168,7 +169,7 @@ void Referee::gameInit()
 void Referee::gameStart()
 {
 	// 命名风格：变量win_flag    函数winFlag (骆驼式)
-	char win_flag = 'y';
+	char win_flag = 'y';            //获胜标志
 	while (win_flag == 'y'){
 		for (int i = 0; i < player_num; i++) {
 			for (int j = 0; j < GAME_DICE_NUM; j++) {   //为新一轮的游戏者激活 GAME_DICE_NUM 个骰子
@@ -180,32 +181,52 @@ void Referee::gameStart()
 			int cur_roll_score = 0;   //本把得分
 			cout << "It's [" << players[i].getName() << "]'s turn" << endl;
 
+			cout << "| Enter Roll |" << endl;
+			cout << "Only who got more than 300 in Enter Roll can have next roll." << endl;
 			rollDice(); 
 			displayRollResult();
 			cur_roll_score = calculateScore();              //入局投掷
 			cout << "[" << players[i].getName() << "] got " << cur_roll_score << "  scores" << endl;
 
-			if (cur_roll_score < 300) {
+			if (cur_roll_score < 300) {      //小于300分无法入局
+				cout << "Sorry , you are out." << endl;
 				continue;
+			}
+			else if (!isExistValidDice()) {      //当前所有骰子已无效
+				cout << "This turn over. Your turn score is" << cur_turn_score << endl;
+			}
+			else {							//成功入局
+				cout << "You are in." << endl;
 			}
 			cur_turn_score += cur_roll_score; 
 			
 			cur_roll_score = 0;
 			cout << "Continue roll?(y or n):" << endl << ">> ";
 			cin >> flag;
-			while (flag) {
-				rollDice(); cur_roll_score = calculateScore();
+			while (flag == 'y') {
+				rollDice();
+				displayRollResult();
+				cur_roll_score = calculateScore();
+				cout << "[" << players[i].getName() << "] got " << cur_roll_score << "  scores" << endl;
 				if (cur_roll_score == 0) {
-					cur_turn_score = 0; break;
+					cout << "Sorry, you got 0 socre. And your current turn score has been cleared." << endl;
+					cur_turn_score = 0; 
+					break;
 				}
-				cur_turn_score += cur_roll_score; cur_roll_score = 0;
-				if ((players[i].getScore() + cur_turn_score) >= 3000) break;
-				cout << "Continue anyway? Please input y or n:";
+				cur_turn_score += cur_roll_score; 
+				cur_roll_score = 0;
+
+				if ((players[i].getScore() + cur_turn_score) >= 3000) {   //胜利判断
+					break;
+				}
+
+				cout << "Continue roll?(y or n):" << endl << ">> ";
 				cin >> flag;
 			}
 			players[i].setScore(players[i].getScore()+cur_turn_score);
+
 			if (players[i].getScore() >= 3000){
-				cout << "We have a winner:" << players[i].getName() << endl;
+				cout << "We have a winner: [" << players[i].getName() << "]" << endl;
 				win_flag = 'n';
 				break;
 			}
@@ -222,7 +243,21 @@ void Referee::displayRollResult()
 {
 	for (int i = 0; i < GAME_DICE_NUM; i++)
 	{
-		cout << dices[i].getNum() << " ";
+		if (dices[i].isValid()) {
+			cout << dices[i].getNum() << " ";
+		}
 	}
 	cout << endl;
+}
+
+/* 当前是否存在有效骰子: true 存在, false 不存在 */
+bool Referee::isExistValidDice() {
+	for (int i = 0; i < GAME_DICE_NUM; i++)
+	{
+		if (dices[i].isValid()) {
+			return true;
+		}
+	}
+
+	return false;
 }
