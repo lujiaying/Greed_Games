@@ -179,7 +179,7 @@ void Referee::gameStart()
 			for (int j = 0; j < GAME_DICE_NUM; j++) {   //为新一轮的游戏者激活 GAME_DICE_NUM 个骰子
 				dices[j].setValid(true);
 			}
-
+			system("cls");
 			turn_flag = 'y';
 			int cur_turn_score = 0;    //本轮得分
 			int cur_roll_score = 0;   //本把得分
@@ -247,6 +247,7 @@ void Referee::gameStart()
 				else if (!isExistValidDice()) {		//当前所有骰子已无效
 					cout << "All dices has benn calculated." << endl;
 					cout << "This turn is over. Your turn score is " << cur_turn_score << endl;
+					cin.get();//清屏用
 					cur_turn_score = cur_roll_score;
 					break;
 				}
